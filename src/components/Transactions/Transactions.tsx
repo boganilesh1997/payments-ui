@@ -1,45 +1,54 @@
+import { ChangeEvent, useState } from "react";
+import { getAllPayments } from "../../data/DataFunctions";
+import PaymentTableRow from "../PaymentTableRow/PaymentTableRow";
+
 const Transaction = ():JSX.Element => {
+
+  const payments = getAllPayments();
+
+  const countries : string[] = Array.from(new Set(payments.map(payment=> payment.country)))
+
+  const [selectedContry, setSelectedcontry ]  = useState<string>("default") 
+  
+
+  const contryChange  = (event : ChangeEvent<HTMLSelectElement>) => 
+  {
+    event.target.options.selectedIndex == 0 ? setSelectedcontry("default") :
+    setSelectedcontry(countries[event.target.options.selectedIndex-1])
+    
+  }
+
     return(
-        <table>
-        <tr>
+    <div>
+        <div className="transactionContrySelector">
+          Select country : <select id ="contrySelector" onChange= {contryChange} >
+          <option value="default">All</option>     
+            {
+              countries.map(c => <option key={c} id={c}>{c}</option>)
+            }
+            
+          </select>
+
+        </div>
+        <table className="transactionTable">
+        <thead>
+          <tr>
           <th>Id</th>
+          <th>OrderID</th>
           <th>Date</th>
-          <th>Currency</th>
           <th>country</th>
+          <th>Currency</th>
           <th>amount</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>2024-10-01</td>
-          <td>USD</td>
-          <td>Germany</td>
-          <td>253</td>
-        </tr>
-        
-        <tr>
-          <td>1</td>
-          <td>2024-10-01</td>
-          <td>USD</td>
-          <td>Germany</td>
-          <td>253</td>
-        </tr>
-        
-        <tr>
-          <td>1</td>
-          <td>2024-10-01</td>
-          <td>USD</td>
-          <td>Germany</td>
-          <td>253</td>
-        </tr>
-        
-        <tr>
-          <td>1</td>
-          <td>2024-10-01</td>
-          <td>USD</td>
-          <td>Germany</td>
-          <td>253</td>
-        </tr>
+        </thead>
+        <tbody>
+          {
+            payments.filter(c => selectedContry == 'default' || c.country == selectedContry ).map(payment => <PaymentTableRow key = {payment.id} {...payment} />)
+          }
+        </tbody>
+       
         </table>
+    </div>
     )
 
 }

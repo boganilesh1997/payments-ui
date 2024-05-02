@@ -1,5 +1,5 @@
 import Menu from "./Menu";
-import './PageHeader.css'
+import './pageHeader.css'
 
 const PageHeader = ():JSX.Element => {
     return(
